@@ -2,40 +2,42 @@ import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import Notiflix from 'notiflix';
 
+const buttonEl =  document.querySelector('[data-start]');
+
 const options = {
     enableTime: true,
     time_24hr: true,
-    defaultDate: new Date(),
+    defaultDate: Date.now(),
     minuteIncrement: 1,
     onClose(selectedDates) {
       const selectedDate = selectedDates[0];
   
-      if (selectedDate <= new Date()) {
+      if (selectedDate <= Date.now()) {
         Notiflix.Notify.failure("Please choose a date in the future");
       } else {
         Notiflix.Notify.success("You can start the timer now!");
-        document.querySelector('[data-start]').removeAttribute("disabled");
+        buttonEl.removeAttribute("disabled");
       }
     },
   };
   
   flatpickr('#datetime-picker', options);
   
-  document.querySelector('[data-start]').addEventListener('click', startTimer);
+  buttonEl.addEventListener('click', startTimer);
   
   function startTimer() {
     const selectedDate = flatpickr('#datetime-picker').selectedDates[0];
-    const currentDate = new Date();
+    const currentDate = Date.now();
     
     if (selectedDate <= currentDate) {
       Notiflix.Notify.failure("Please choose a date in the future");
       return;
     }
   
-    document.querySelector('[data-start]').setAttribute("disabled", "disabled");
+    buttonEl.setAttribute("disabled", "disabled");
   
     const timerInterval = setInterval(() => {
-      const timeDifference = selectedDate - new Date();
+      const timeDifference = selectedDate - Date.now();
       
       if (timeDifference <= 0) {
         clearInterval(timerInterval);
@@ -47,12 +49,18 @@ const options = {
     }, 1000);
   }
   
+const daysEl = document.querySelector('[data-days]');
+const hoursEl = document.querySelector('[data-hours]');
+const minutesEl = document.querySelector('[data-minutes]');
+const secondsEl = document.querySelector('[data-seconds]');
+
+
   function updateTimer(ms) {
     const { days, hours, minutes, seconds } = convertMs(ms);
-    document.querySelector('[data-days]').textContent = addLeadingZero(days);
-    document.querySelector('[data-hours]').textContent = addLeadingZero(hours);
-    document.querySelector('[data-minutes]').textContent = addLeadingZero(minutes);
-    document.querySelector('[data-seconds]').textContent = addLeadingZero(seconds);
+    daysEl.textContent = addLeadingZero(days);
+    hoursEl.textContent = addLeadingZero(hours);
+    minutesEl.textContent = addLeadingZero(minutes);
+    secondsEl.textContent = addLeadingZero(seconds);
   }
   
   function convertMs(ms) {

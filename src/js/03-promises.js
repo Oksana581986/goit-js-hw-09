@@ -1,14 +1,16 @@
 import Notiflix from 'notiflix';
 
-const delay = parseInt(document.querySelector('[name="delay"]').value);
-const step = parseInt(document.querySelector('[name="step"]').value);
-const amount = parseInt(document.querySelector('[name="amount"]').value);
+const form = document.querySelector(".form");
 
-if (isNaN(delay) || isNaN(step) || isNaN(amount)) {
-  Notiflix.Notify.failure("Please fill in all fields with valid numbers.");
-} else {
-  createPromises();
-}
+form.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const delay = Number(form.elements.delay.value);
+    const step = Number(form.elements.step.value);
+    const amount = Number(form.elements.amount.value);
+
+    createPromises(delay, step, amount);
+});
 
 function createPromise(position, delay) {
   return new Promise((resolve, reject) => {
@@ -23,9 +25,9 @@ function createPromise(position, delay) {
   });
 }
 
-function createPromises() {
+function createPromises(delay, step, amount) {
   for (let i = 1; i <= amount; i++) {
-    createPromise(i, delay + (i - 1) * step)
+    createPromise(i, delay + step * (i - 1))
       .then(({ position, delay }) => {
         Notiflix.Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
       })
