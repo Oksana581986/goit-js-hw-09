@@ -20,25 +20,21 @@ const options = {
       }
     },
   };
-  
-  flatpickr('#datetime-picker', options);
+   
+  const inputEl = document.querySelector('#datetime-picker');
+
+  flatpickr(inputEl, options);
   
   buttonEl.addEventListener('click', startTimer);
   
   function startTimer() {
-    const selectedDate = flatpickr('#datetime-picker').selectedDates[0];
-    const currentDate = Date.now();
-    
-    if (selectedDate <= currentDate) {
-      Notiflix.Notify.failure("Please choose a date in the future");
-      return;
-    }
-  
-    buttonEl.setAttribute("disabled", "disabled");
+    const selectedDate = new Date(inputEl.value);
+   
+    buttonEl.setAttribute('disabled', 'disabled');
   
     const timerInterval = setInterval(() => {
       const timeDifference = selectedDate - Date.now();
-      
+      console.log('timeDifference', timeDifference);
       if (timeDifference <= 0) {
         clearInterval(timerInterval);
         updateTimer(0);
